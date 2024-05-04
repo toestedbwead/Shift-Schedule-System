@@ -3,7 +3,49 @@
     require_once("/xampp/htdocs/LEI/connections.php");
 
     $success_message = $error_message = "";
+
+    // Check if the form is submitted
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Retrieve form data
+    $employeeName = $_POST['employeeName'];
+    $shiftType = $_POST['shiftType'];
+    $date = $_POST['date'];
+    $notes = mysqli_real_escape_string($connections, $_POST['notes']);
+    
+    // Get shift start time based on selected shift type
+    $shiftTime = getShiftTime($shiftType);
+    
+    // Convert the date to month/day/year format
+    $date = date('m/d/Y', strtotime($date));
+    // Get the day corresponding to the selected date
+    $day = date('l', strtotime($date));
+    
+    // Insert data into the database
+    $sql = "INSERT INTO shift_table (employeeName, shift_type, shift_time, date, day, notes) 
+            VALUES ('$employeeName', '$shiftType', '$shiftTime', '$date', '$day', '$notes')";
+
+    if (mysqli_query($connections, $sql)) {
+        $success_message = "Schedule added successfully";
+    } else {
+        $error_message = "Error: " . $sql . "<br>" . mysqli_error($connection);
+    }
+}
+
+// Function to get shift start time based on shift type
+function getShiftTime($shiftType) {
+    switch ($shiftType) {
+        case 'Morning':
+            return '6:00 am - 2:00 pm';
+        case 'Afternoon':
+            return '2:00 pm - 10:00 pm';
+        case 'Evening':
+            return '10:00 pm - 6:00 am'; 
+        default:
+            return ''; // Default value if shift type is invalid
+    }
+}
 ?>
+
 <!DOCTYPE html>
 <html>
 
@@ -139,8 +181,64 @@
             <!-- MAIN SECTION -->
             <main class="content px-3 py-4">
                 <div class="container-fluid">
+
+                <div class="container mt-3">
+                        <?php if (!empty($success_message)) : ?>
+                            <div class="alert alert-success" role="alert"><?php echo $success_message; ?></div>
+                        <?php endif; ?>
+                        <?php if (!empty($error_message)) : ?>
+                            <div class="alert alert-danger" role="alert"><?php echo $error_message; ?></div>
+                        <?php endif; ?>
+                    </div>
+
+                    
                     <div class="mb-3">
-                        <h3 class="fw-bold fs-4 mb-3">Welcome, Admin!</h3>
+                    <h3 class="fw-bold fs-4 mb-3">Add Schedule</h3>
+                        <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+                            <div class="mb-3">
+                                <label for="employeeName" class="form-label">Employee Name</label>
+                                <input type="text" class="form-control border-secondary" id="employeeName" name="employeeName" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="shiftType" class="form-label">Shift Type</label>
+                                <select class="form-select border-secondary" id="shiftType" name="shiftType" required>
+                                    <option value="Morning">Morning</option>
+                                    <option value="Afternoon">Afternoon</option>
+                                    <option value="Evening">Evening</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="date" class="form-label">Date</label>
+                                <input type="date" class="form-control border-secondary" id="date" name="date" required>
+                            </div>
+
+
+                            <div class="mb-3">
+                                <label for="notes" class="form-label">Notes</label>
+                                <textarea class="form-control border-secondary" id="notes" name="notes" rows="3"></textarea>
+                            </div>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Add Schedule</button>
+
+                            <!-- Confirmation Modal -->
+                            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="confirmationModalLabel">Confirm Schedule Addition</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Are you sure you want to add this schedule?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                            <button type="submit" class="btn btn-primary">Yes, Add Schedule</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
                         
                         <!-- there used to be a table here and other cards -->
 

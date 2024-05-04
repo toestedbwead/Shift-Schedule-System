@@ -202,6 +202,8 @@ if (isset($_POST['back'])) {
             </div>
         </aside>
 
+        
+
         <div class="main">
             <main class="content px-3 py-4">
                 <div class="container-fluid">
@@ -217,7 +219,7 @@ if (isset($_POST['back'])) {
                     <div class="mb-3">
                         <h3 class="fw-bold mb-4">List of Employees</h3>
                         <div class="card mt-5">
-                            <table class="table table-bordered">
+                            <table class="table table-bordered border-secondary">
                                 <tr>
                                     <td> Employee ID </td>
                                     <td> Name </td>
@@ -316,6 +318,8 @@ if (isset($_POST['back'])) {
                                     </div>
 
 
+                                    
+
 
 
                                     <!-- Delete Modal -->
@@ -339,6 +343,30 @@ if (isset($_POST['back'])) {
                                             </div>
                                         </div>
                                     </div>
+
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" id="exampleModalLabel">
+                                                        You are logging out
+                                                    </h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body text-danger">
+                                                    Are you sure you want to log out?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                                                    <a href="/LEI/login.php">
+                                                        <button type="button" class="btn btn-primary">Yes</button>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                    </div>
+
+                                    
                                 <?php
                                 }
                                 ?>
@@ -347,14 +375,19 @@ if (isset($_POST['back'])) {
                         </div>
                     </div>
 
+                    
+
                     <!-- THIS IS THE VIEW BUTTON  -->
-                    <form method="POST" action="<?php echo $_SERVER['PHP_SELF'] ?>?page=<?php echo $page; ?>">
-                        <!-- Add a class to the form for styling -->
-                        <button type="submit" name="view_more" class="btn btn-primary transition <?php echo $has_more_records ? '' : 'd-none'; ?>">View More</button>
-                        <?php if ($page > 1): ?>
-                            <button type="submit" name="back" class="btn btn-secondary transition">Back</button>
-                        <?php endif; ?>
-                    </form>
+                    <div class="d-flex justify-content-center">
+                        <form method="POST" action="<?php echo $_SERVER['PHP_SELF'] ?>?page=<?php echo $page; ?>">
+                            <!-- Add a class to the form for styling -->
+                            <button type="submit" name="view_more" class="btn btn-primary transition <?php echo $has_more_records ? '' : 'd-none'; ?>">View More</button>
+                            <?php if ($page > 1): ?>
+                                <button type="submit" name="back" class="btn btn-secondary transition">Back</button>
+                            <?php endif; ?>
+                        </form>
+                    </div>
+                    
 
                 </div>
             </main>
