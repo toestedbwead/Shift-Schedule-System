@@ -118,7 +118,7 @@
             <!-- LIST OF MODULES -->
             <ul class="sidebar-nav">
                 <li class="sidebar-item">
-                    <a href="dashboard.php" class="sidebar-link">
+                    <a href="dashboard" class="sidebar-link">
                         <i class='bx bx-user' ></i>
                         <span>Dashboard</span>
                     </a>
@@ -133,12 +133,12 @@
 
                     <ul id="sched" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                         <li class="sidebar-item">
-                            <a href="schedule-table.php" class="sidebar-link">Schedule Table</a>
+                            <a href="schedule-table" class="sidebar-link">Schedule Table</a>
                         </li>
                     </ul>
                     <ul id="sched" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                         <li class="sidebar-item">
-                            <a href="add-schedule.php" class="sidebar-link">Add Schedule</a>
+                            <a href="add-schedule" class="sidebar-link">Add Schedule</a>
                         </li>
                     </ul>
                 </li>
@@ -146,25 +146,25 @@
                 <li class="sidebar-item">
                     <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                         data-bs-target="#list" aria-expanded="false" aria-controls="auth">
-                        <i class='bx bx-clinic' ></i>
+                        <i class='bx bx-user' ></i>
                         <span>Employees</span>
                     </a>
 
                     <ul id="list" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                         <li class="sidebar-item">
-                            <a href="list-of-employees.php" class="sidebar-link">List of Employees</a>
+                            <a href="list-of-employees" class="sidebar-link">List of Employees</a>
                         </li>
                     </ul>
 
                     <ul id="list" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                         <li class="sidebar-item">
-                            <a href="add-employee.php" class="sidebar-link">Add Employee</a>
+                            <a href="add-employee" class="sidebar-link">Add Employee</a>
                         </li>
                     </ul>
                 </li>
 
                 <!-- MODULE w submodules -->
-                <li class="sidebar-item">
+                <!-- <li class="sidebar-item">
                     <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                         data-bs-target="#multi" aria-expanded="false" aria-controls="multi">
                         <i class='bx bx-heart-circle'></i>
@@ -186,19 +186,19 @@
                             </ul>
                         </li>
                     </ul>
-                </li>
+                </li> -->
 
                 <!-- CONT. OF LIST OF MODULES HERE  -->
                 <li class="sidebar-item">
-                    <a href="#" class="sidebar-link">
-                        <i class='bx bx-bell' ></i>                        
-                        <span>Module 5</span>
+                    <a href="request" class="sidebar-link">
+                        <i class='bx bxs-report'></i>                        
+                        <span>Shift Request</span>
                     </a>
                 </li>
                 <li class="sidebar-item">
-                    <a href="#" class="sidebar-link">
-                        <i class='bx bx-cog' ></i>                        
-                        <span>Setting</span>
+                    <a href="notification" class="sidebar-link">
+                        <i class='bx bx-bell' ></i>                        
+                        <span>Notification</span>
                     </a>
                 </li>
             </ul>
@@ -215,7 +215,38 @@
 
         <!-- MAIN HEADER SECTION -->
         <div class="main">
-            <!-- there used to be a nav search and pfp here -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="#">Schedule Table</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <form class="d-flex ms-auto">
+                            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                            <button class="btn btn-outline-success" type="submit">Search</button>
+                        </form>
+                        <div class="dropdown ms-3">
+                            <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <img src="path/to/default/profile.jpg" alt="" width="32" height="32" class="rounded-circle me-2">
+                                <strong>Profile</strong>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                <li>
+                                    <form class="px-4 py-3">
+                                        <div class="mb-3">
+                                            <label for="profilePicture" class="form-label">Upload Profile Picture</label>
+                                            <input type="file" class="form-control" id="profilePicture">
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Upload</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </nav>
 
 
             <!-- MAIN SECTION -->
@@ -234,7 +265,6 @@
 
 
                     <div class="mb-3">
-                        <h3 class="fw-bold fs-4 mb-3">Schedule Table</h3>
                         <table class="table table-bordered border-secondary">
                                 <tr>
                                     <td>Employee ID</td>
@@ -365,7 +395,7 @@
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                                                    <a href="/LEI/login.php">
+                                                    <a href="/LEI/login">
                                                         <button type="button" class="btn btn-primary">Yes</button>
                                                     </a>
                                                 </div>

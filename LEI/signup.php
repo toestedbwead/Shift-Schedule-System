@@ -74,7 +74,7 @@
                 // Attempt to execute the prepared statement
                 if (mysqli_stmt_execute($stmt)) {
                     // Redirect to login page
-                    header("location: login.php");
+                    header("location: login");
                 } else {
                     echo "Something went wrong. Please try again later.";
                 }
@@ -147,7 +147,7 @@
                         </div>
 
                         <div class="row">
-                            <small>Already have an account?<a href="login.php">Sign In</a></small>
+                            <small>Already have an account?<a href="login">Sign In</a></small>
                         </div>
                     </form>
                 </div>

@@ -24,10 +24,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $db_account_type = $row["Account_type"];
                 if ($db_password == $password) {
                     if ($db_account_type == "1") {
-                        header("Location: admin/dashboard.php"); 
+                        header("Location: admin/dashboard"); 
                         exit();
                     } else {
-                        header("Location: user.php"); 
+                        header("Location: user/dashboard"); 
                         exit();
                     }
                 } else {
@@ -120,7 +120,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
 
                     <div class="row">
-                        <small>Don't have an account? <a href="signup.php">Sign Up</a></small>
+                        <small>Don't have an account? <a href="signup">Sign Up</a></small>
                     </div>
                 
                 </div>

@@ -23,7 +23,7 @@
                     <i class='bx bx-grid-alt'></i>
                 </button>
                 <div class="sidebar-logo">
-                    <a href="#">Admin</a>
+                    <a href="#">User</a>
                 </div>
             </div>
 
@@ -37,83 +37,25 @@
                 </li>
 
                 <li class="sidebar-item">
-                    <a href="addsched.html" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                        data-bs-target="#sched" aria-expanded="false" aria-controls="auth">
-                        <i class='bx bx-clinic' ></i>
-                        <span>Shift & Scheduling</span>
+                    <a href="viewsched" class="sidebar-link">
+                        <i class='bx bx-calendar' ></i>                        
+                        <span>View Schedule</span>
                     </a>
-
-                    <ul id="sched" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                        <li class="sidebar-item">
-                            <a href="schedule-table" class="sidebar-link">Schedule Table</a>
-                        </li>
-                    </ul>
-                    <ul id="sched" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                        <li class="sidebar-item">
-                            <a href="add-schedule" class="sidebar-link">Add Schedule</a>
-                        </li>
-                    </ul>
                 </li>
 
                 <li class="sidebar-item">
-                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                        data-bs-target="#list" aria-expanded="false" aria-controls="auth">
-                        <i class='bx bx-user' ></i>
-                        <span>Employees</span>
+                    <a href="clock" class="sidebar-link">
+                        <i class='bx bx-time' ></i>                        
+                        <span>Clock In / Clock Out</span>
                     </a>
-
-                    <ul id="list" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                        <li class="sidebar-item">
-                            <a href="list-of-employees" class="sidebar-link">List of Employees</a>
-                        </li>
-                    </ul>
-
-                    <ul id="list" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                        <li class="sidebar-item">
-                            <a href="add-employee" class="sidebar-link">Add Employee</a>
-                        </li>
-                    </ul>
                 </li>
 
-                <!-- MODULE w submodules -->
-                <!-- <li class="sidebar-item">
-                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                        data-bs-target="#multi" aria-expanded="false" aria-controls="multi">
-                        <i class='bx bx-heart-circle'></i>
-                        <span>Module 4</span>
-                    </a>
-                    <ul id="multi" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                        <li class="sidebar-item">
-                            <a href="#" class="sidebar-link collapsed" data-bs-toggle="collapse"
-                                data-bs-target="#multi-two" aria-expanded="false" aria-controls="multi-two">
-                                Two Links
-                            </a>
-                            <ul id="multi-two" class="sidebar-dropdown list-unstyled collapse">
-                                <li class="sidebar-item">
-                                    <a href="#" class="sidebar-link">Link 1</a>
-                                </li>
-                                <li class="sidebar-item">
-                                    <a href="#" class="sidebar-link">Link 2</a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li> -->
-
-                <!-- CONT. OF LIST OF MODULES HERE  -->
                 <li class="sidebar-item">
                     <a href="request" class="sidebar-link">
                         <i class='bx bxs-report' ></i>                        
-                        <span>Shift Request</span>
+                        <span>Request Shift Change</span>
                     </a>
                 </li>
-                <li class="sidebar-item">
-                    <a href="notification" class="sidebar-link">
-                        <i class='bx bx-bell' ></i>                        
-                        <span>Notification</span>
-                    </a>
-                </li>
-            </ul>
 
             <!-- LOGOUT SECTION  -->
             <div class="sidebar-footer">
@@ -129,7 +71,7 @@
         <div class="main">
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
                 <div class="container-fluid">
-                    <a class="navbar-brand" href="#">Admin Dashboard</a>
+                    <a class="navbar-brand" href="#">Request Change</a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
@@ -165,6 +107,7 @@
             <main class="content px-3 py-4">
                 <div class="container-fluid">
                     <div class="mb-3">
+                        <!-- <h3 class="fw-bold fs-4 mb-3">Welcome, Admin!</h3> -->
                         
                         <!-- there used to be a table here and other cards -->
 
