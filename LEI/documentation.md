@@ -18,6 +18,50 @@ Welcome to the Shift & Scheduling System documentation.
 5. [ViewShiftRequest] 
 6. [NotificationforShiftRequest]
 
+database name = shiftnsched
+
+tables:
+1. clock_table
+columns: 
+userID	
+employeeName	
+clockDate	
+clockInTime	
+clockOutTime
+2. employee_table
+columns:
+emp_id	
+emp_name	
+emp_status	
+emp_role	
+emp_department	
+3. login_table
+columns:
+login_id	
+Email	
+password	
+Account_type
+4. shift_change_requests
+columns:
+requestID	
+employeeName	
+currentShiftDate	
+currentShiftType	
+desiredShiftDate	
+desiredShiftType	
+swapEmployeeName	
+requestDate	
+status
+5. shift_table
+columns:
+shift_id	
+employeeName	
+shift_type	
+shift_time	
+date	
+day	
+notes
+
 ## User Modules
 1. [ViewSchedule]
 2. [ClockInClockOut]
@@ -26,34 +70,16 @@ Welcome to the Shift & Scheduling System documentation.
 
 Here are the suggested columns for the modules/tables:
 
-### 1. [ViewSchedule]
-This table will store the schedule details of users.
-
-| Column Name        | Data Type       | Description                             |
-|--------------------|-----------------|-----------------------------------------|
-| `schedule_id`      | INT (Primary Key, Auto Increment) | Unique identifier for each schedule record |
-| `user_id`          | INT             | Foreign key linking to the users table  |
-| `date`             | DATE            | Date of the scheduled shift             |
-| `start_time`       | TIME            | Start time of the shift                 |
-| `end_time`         | TIME            | End time of the shift                   |
-| `shift_type`       | VARCHAR(50)     | Type of shift (e.g., Morning, Evening)  |
-| `location`         | VARCHAR(100)    | Location of the shift                   |
-| `created_at`       | TIMESTAMP       | Record creation timestamp               |
-| `updated_at`       | TIMESTAMP       | Record update timestamp                 |
 
 ### 2. [ClockInClockOut]
 This table will log the clock in and clock out times of users.
 
 | Column Name        | Data Type       | Description                             |
 |--------------------|-----------------|-----------------------------------------|
-| `clock_id`         | INT (Primary Key, Auto Increment) | Unique identifier for each clock record |
 | `user_id`          | INT             | Foreign key linking to the users table  |
 | `date`             | DATE            | Date of the clock in/out                |
 | `clock_in_time`    | TIMESTAMP       | Clock in timestamp                      |
 | `clock_out_time`   | TIMESTAMP       | Clock out timestamp                     |
-| `location`         | VARCHAR(100)    | Location of the clock in/out            |
-| `created_at`       | TIMESTAMP       | Record creation timestamp               |
-| `updated_at`       | TIMESTAMP       | Record update timestamp                 |
 
 ### 3. [RequestShiftChange]
 This table will handle requests for shift changes made by users.
