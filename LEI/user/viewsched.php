@@ -1,49 +1,46 @@
 <?php
-    require_once("/xampp/htdocs/LEI/connections.php");
-    $query = " select * from shift_table";
-    $result = mysqli_query($connections,$query);
-    $success_message = "";
-    $error_message = "";
+require_once("/xampp/htdocs/LEI/connections.php");
 
-    // Retrieve the list of employees
-    $query = "SELECT * FROM shift_table";
-    $result = mysqli_query($connections, $query);
+$success_message = "";
+$error_message = "";
 
-    // VIEW MORE FUNCTION
+// SEARCH FUNCTIONALITY
+$search_query = "";
+if (isset($_POST['search_query'])) {
+    $search_query = mysqli_real_escape_string($connections, $_POST['search_query']); // Escape the input to prevent SQL injection
+}
 
-    $limit = 5;
+// PAGINATION
+$limit = 5;
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$offset = ($page - 1) * $limit;
 
-    // Get the current page number from the URL, default to 1
-    $page = isset($_GET['page']) ? $_GET['page'] : 1;
+$query = "SELECT * FROM shift_table";
+if (!empty($search_query)) {
+    $query .= " WHERE shift_id LIKE '%$search_query%' OR employeeName LIKE '%$search_query%' OR shift_type LIKE '%$search_query%' OR date LIKE '%$search_query%' OR notes LIKE '%$search_query%'";
+}
+$query .= " LIMIT $limit OFFSET $offset";
 
-    // Calculate the offset for the query
-    $offset = ($page - 1) * $limit;
-
-    // Construct the SQL query to fetch employees with pagination
-    $query = "SELECT * FROM shift_table LIMIT $limit OFFSET $offset";
-    $result = mysqli_query($connections, $query);
-
-    // Check if there are more records beyond the current page
+$result = mysqli_query($connections, $query);
+if (!$result) {
+    $error_message = "Error executing query: " . mysqli_error($connections);
+} else {
     $has_more_records = mysqli_num_rows($result) === $limit;
+}
 
-    // Check if the view_more form is submitted
-    if (isset($_POST['view_more'])) {
-        // Increment the page number to fetch the next set of records
-        $page++;
-        // Redirect back to the same page with updated page number
-        header("Location: {$_SERVER['PHP_SELF']}?page=$page");
-        exit;
-    }
+if (isset($_POST['view_more'])) {
+    $page++;
+    header("Location: {$_SERVER['PHP_SELF']}?page=$page");
+    exit;
+}
 
-    // Check if the back form is submitted
-    if (isset($_POST['back'])) {
-        // Decrement the page number to go back to the previous set of records
-        $page = max($page - 1, 1);
-        // Redirect back to the same page with updated page number
-        header("Location: {$_SERVER['PHP_SELF']}?page=$page");
-        exit;
-    }
+if (isset($_POST['back'])) {
+    $page = max($page - 1, 1);
+    header("Location: {$_SERVER['PHP_SELF']}?page=$page");
+    exit;
+}
 ?>
+
 
 <!DOCTYPE html>
 <html>
@@ -52,7 +49,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sidebar With Bootstrap</title>
+    <title>Shift and Scheduling System</title>
     <!-- <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet" /> -->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -104,6 +101,9 @@
                     </a>
                 </li>
 
+                
+            </ul>
+
             <!-- LOGOUT SECTION  -->
             <div class="sidebar-footer">
                 <a href="#" class="sidebar-link" data-bs-toggle="modal" data-bs-target="#exampleModal">
@@ -124,11 +124,11 @@
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <form class="d-flex ms-auto">
+                        <!-- <form class="d-flex ms-auto">
                             <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                             <button class="btn btn-outline-success" type="submit">Search</button>
-                        </form>
-                        <div class="dropdown ms-3">
+                        </form> -->
+                        <!-- <div class="dropdown ms-3">
                             <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <img src="path/to/default/profile.jpg" alt="" width="32" height="32" class="rounded-circle me-2">
                                 <strong>Profile</strong>
@@ -144,7 +144,7 @@
                                     </form>
                                 </li>
                             </ul>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </nav>
@@ -169,8 +169,15 @@
                         </div>
                     <?php endif; ?>
 
+                    <!-- Search Form -->
+                    <form method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>" class="mb-3">
+                        <div class="input-group">
+                            <input type="text" name="search_query" class="form-control" placeholder="Search by any field" value="<?php echo htmlspecialchars($search_query); ?>" onkeypress="if(event.keyCode == 13) { this.form.submit(); return false; }">
+                        </div>
+                    </form>
+
                     <!-- Table to display employees -->
-                    <table class="table table-bordered border-secondary">
+                    <table id="documentsTable" class="table table-striped table-bordered mx-auto custom-table">
                                 <tr>
                                     <td>Employee ID</td>
                                     <td>Employee Name</td>

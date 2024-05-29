@@ -1,3 +1,40 @@
+<?php
+require_once("/xampp/htdocs/LEI/connections.php");
+
+$success_message = '';
+$error_message = '';
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (isset($_POST['approve'])) {
+        $requestID = $_POST['requestID'];
+        $sql = "UPDATE shift_change_requests SET status='Approved' WHERE requestID=?";
+        $stmt = $connections->prepare($sql);
+        $stmt->bind_param("i", $requestID);
+        if ($stmt->execute()) {
+            $success_message = "Shift change request approved successfully.";
+        } else {
+            $error_message = "Error: " . $stmt->error;
+        }
+        $stmt->close();
+    } elseif (isset($_POST['reject'])) {
+        $requestID = $_POST['requestID'];
+        $sql = "UPDATE shift_change_requests SET status='Rejected' WHERE requestID=?";
+        $stmt = $connections->prepare($sql);
+        $stmt->bind_param("i", $requestID);
+        if ($stmt->execute()) {
+            $success_message = "Shift change request rejected successfully.";
+        } else {
+            $error_message = "Error: " . $stmt->error;
+        }
+        $stmt->close();
+    }
+}
+
+// Fetch data from shift_change_requests table
+$sql = "SELECT requestID, employeeName, currentShiftDate, currentShiftType, desiredShiftDate, desiredShiftType, swapEmployeeName, status FROM shift_change_requests";
+$result = $connections->query($sql);
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -5,7 +42,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sidebar With Bootstrap</title>
+    <title>Shift and Scheduling System</title>
     <!-- <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet" /> -->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -107,12 +144,7 @@
                         <span>Shift Request</span>
                     </a>
                 </li>
-                <li class="sidebar-item">
-                    <a href="notification" class="sidebar-link">
-                        <i class='bx bx-bell' ></i>                        
-                        <span>Notification</span>
-                    </a>
-                </li>
+                
             </ul>
 
             <!-- LOGOUT SECTION  -->
@@ -135,7 +167,7 @@
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <form class="d-flex ms-auto">
+                        <!-- <form class="d-flex ms-auto">
                             <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                             <button class="btn btn-outline-success" type="submit">Search</button>
                         </form>
@@ -155,7 +187,7 @@
                                     </form>
                                 </li>
                             </ul>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </nav>
@@ -163,8 +195,59 @@
 
             <!-- MAIN SECTION -->
             <main class="content px-3 py-4">
-                <div class="container-fluid">
-                    <div class="mb-3">
+                <!-- Display Shift Change Requests -->
+                    <div class="mt-2 p-2 border border-secondary">
+                        <h3 class="fw-bold fs-4 mb-3">Shift Change Requests</h3>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Request ID</th>
+                                    <th scope="col">Employee Name</th>
+                                    <th scope="col">Current Shift Date</th>
+                                    <th scope="col">Current Shift Type</th>
+                                    <th scope="col">Desired Shift Date</th>
+                                    <th scope="col">Desired Shift Type</th>
+                                    <th scope="col">Swap Employee Name</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                if ($result->num_rows > 0) {
+                                    // Output data of each row
+                                    while ($row = $result->fetch_assoc()) {
+                                        echo "<tr>
+                                                <td>" . $row["requestID"] . "</td>
+                                                <td>" . $row["employeeName"] . "</td>
+                                                <td>" . $row["currentShiftDate"] . "</td>
+                                                <td>" . $row["currentShiftType"] . "</td>
+                                                <td>" . $row["desiredShiftDate"] . "</td>
+                                                <td>" . $row["desiredShiftType"] . "</td>
+                                                <td>" . $row["swapEmployeeName"] . "</td>
+                                                <td>" . $row["status"] . "</td>
+                                                <td>
+                                                    <form action='" . $_SERVER['PHP_SELF'] . "' method='POST' style='display:inline;'>
+                                                        <input type='hidden' name='requestID' value='" . $row["requestID"] . "'>
+                                                        <button type='submit' name='approve' class='btn btn-success btn-sm'>Approve</button>
+                                                    </form>
+                                                </td>
+                                                <td>
+                                                    <form action='" . $_SERVER['PHP_SELF'] . "' method='POST' style='display:inline;'>
+                                                        <input type='hidden' name='requestID' value='" . $row["requestID"] . "'>
+                                                        <button type='submit' name='reject' class='btn btn-danger btn-sm'>Reject</button>
+                                                    </form>
+                                                </td>
+                                            </tr>";
+                                    }
+                                } else {
+                                    echo "<tr><td colspan='9' class='text-center'>No requests found</td></tr>";
+                                }
+                                ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
                         
                         <!-- there used to be a table here and other cards -->
 

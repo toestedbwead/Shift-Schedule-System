@@ -1,28 +1,76 @@
 <?php
-
     require_once("/xampp/htdocs/LEI/connections.php");
 
-    //declaring variables for error and success messages
-    $success_message = '';
-    $error_message = '';
+// Declaring variables for error and success messages
+$success_message = '';
+$error_message = '';
 
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    
+    // Check if the file is uploaded
+    if (isset($_FILES['emp_img']) && $_FILES['emp_img']['error'] == UPLOAD_ERR_OK) {
         $emp_name = $_POST['emp_name'];
         $emp_status = $_POST['emp_status'];
         $emp_role = $_POST['emp_role'];
         $emp_department = $_POST['emp_department'];
+        $emp_img = $_FILES['emp_img'];
 
-        $sql = "INSERT INTO employee_table (emp_name, emp_status, emp_role, emp_department)
-                VALUES ('$emp_name', '$emp_status', '$emp_role', '$emp_department')";
+        $target_dir = "";
+        $target_file = $target_dir . basename($emp_img["name"]);
+        $uploadOk = 1;
+        $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
-        if (mysqli_query($connections, $sql)) {
-            $success_message = "Employee added succesfully!";
+        // Check if image file is a actual image or fake image
+        $check = getimagesize($emp_img["tmp_name"]);
+        if ($check !== false) {
+            $uploadOk = 1;
+        } else {
+            $error_message = "File is not an image.";
+            $uploadOk = 0;
         }
-        else {
-            $error_message = "Error: " . $sql . "<br>" . mysqli_error($connections);
+
+        // Check file size
+        if ($emp_img["size"] > 2000000) {
+            $error_message = "Sorry, your file is too large.";
+            $uploadOk = 0;
         }
+
+        // Allow certain file formats
+        if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif") {
+            $error_message = "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+            $uploadOk = 0;
+        }
+
+        // Check if $uploadOk is set to 0 by an error
+        if ($uploadOk == 0) {
+            $error_message = "Sorry, your file was not uploaded.";
+        } else {
+            if (move_uploaded_file($emp_img["tmp_name"], $target_file)) {
+                $success_message = "The file " . htmlspecialchars(basename($emp_img["name"])) . " has been uploaded.";
+
+                // Prepare and bind
+                $stmt = $connections->prepare("INSERT INTO employee_table (emp_name, emp_status, emp_role, emp_department, emp_img) VALUES (?, ?, ?, ?, ?)");
+                $stmt->bind_param("sssss", $emp_name, $emp_status, $emp_role, $emp_department, $target_file);
+
+                // Execute the statement
+                if ($stmt->execute()) {
+                    $success_message = "Employee added successfully!";
+                } else {
+                    $error_message = "Error: " . $stmt->error;
+                }
+
+                $stmt->close();
+            } else {
+                $error_message = "Sorry, there was an error uploading your file.";
+            }
+        }
+    } else {
+        $error_message = "No file was uploaded or there was an error uploading the file.";
     }
+}
 ?>
+
+
 
 <!DOCTYPE html>
 <html>
@@ -31,7 +79,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sidebar With Bootstrap</title>
+    <title>Shift and Scheduling System</title>
     <!-- <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet" /> -->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -133,12 +181,7 @@
                         <span>Shift Request</span>
                     </a>
                 </li>
-                <li class="sidebar-item">
-                    <a href="notification" class="sidebar-link">
-                        <i class='bx bx-bell' ></i>                        
-                        <span>Notification</span>
-                    </a>
-                </li>
+                
             </ul>
 
             <!-- LOGOUT SECTION  -->
@@ -161,11 +204,13 @@
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <form class="d-flex ms-auto">
+                        <!-- <form class="d-flex ms-auto">
                             <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                             <button class="btn btn-outline-success" type="submit">Search</button>
-                        </form>
-                        <div class="dropdown ms-3">
+                        </form> -->
+
+                        
+                        <!-- <div class="dropdown ms-3">
                             <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <img src="path/to/default/profile.jpg" alt="" width="32" height="32" class="rounded-circle me-2">
                                 <strong>Profile</strong>
@@ -181,7 +226,7 @@
                                     </form>
                                 </li>
                             </ul>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </nav>
@@ -204,7 +249,7 @@
                 </div>
                 <div class="container-fluid">
                     <div class="mb-3">
-                    <form id="addEmployeeForm" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
+                    <form id="addEmployeeForm" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" enctype="multipart/form-data">
                         
                         <div class="mb-3">
                             <label for="emp_name" class="form-label">Full Name:</label>
@@ -250,6 +295,11 @@
                                 <option value="Neurology">Neurology</option>
                                 <option value="Psychiatry">Psychiatry</option>
                             </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="emp_img" class="form-label">Upload your Picture:</label>
+                            <input type="file" class="form-control border-secondary" id="emp_img" name="emp_img" required>
                         </div>
                         <!-- Button to trigger the modal -->
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmationModal">Add Employee</button>

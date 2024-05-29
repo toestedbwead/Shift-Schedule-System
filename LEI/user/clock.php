@@ -1,3 +1,29 @@
+<?php
+
+    require_once("/xampp/htdocs/LEI/connections.php");
+
+    //declaring variables for error and success messages
+    $success_message = '';
+    $error_message = '';
+
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $employeeName = $_POST['employeeName'];
+        $clockDate = $_POST['clockDate'];
+        $clockInTime = $_POST['clockInTime'];
+        $clockOutTime = $_POST['clockOutTime'];
+
+        $sql = "INSERT INTO clock_table (employeeName, clockDate, clockInTime, clockOutTime)
+                VALUES ('$employeeName', '$clockDate', '$clockInTime', '$clockOutTime')";
+
+        if (mysqli_query($connections, $sql)) {
+            $success_message = "Clock In/Out details submitted succesfully!";
+        }
+        else {
+            $error_message = "Error: " . $sql . "<br>" . mysqli_error($connections);
+        }
+    }
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -5,7 +31,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sidebar With Bootstrap</title>
+    <title>Shift and Scheduling System</title>
     <!-- <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet" /> -->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -56,7 +82,7 @@
                         <span>Request Shift Change</span>
                     </a>
                 </li>
-
+            </ul>
             <!-- LOGOUT SECTION  -->
             <div class="sidebar-footer">
                 <a href="#" class="sidebar-link" data-bs-toggle="modal" data-bs-target="#exampleModal">
@@ -77,7 +103,7 @@
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <form class="d-flex ms-auto">
+                        <!-- <form class="d-flex ms-auto">
                             <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                             <button class="btn btn-outline-success" type="submit">Search</button>
                         </form>
@@ -97,7 +123,7 @@
                                     </form>
                                 </li>
                             </ul>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </nav>
@@ -105,12 +131,65 @@
 
             <!-- MAIN SECTION -->
             <main class="content px-3 py-4">
+
+                <div class="container mt-3">
+                    <?php if (!empty($success_message)) : ?>
+                        <div class="alert alert-success" role="alert"><?php echo $success_message; ?></div>
+                        <?php endif; ?>
+                        <?php if (!empty($error_message)) : ?>
+                        <div class="alert alert-danger" role="alert"><?php echo $error_message; ?></div>
+                         <?php endif; ?>
+                </div>
+
                 <div class="container-fluid">
                     <div class="mb-3">
-                        <!-- <h3 class="fw-bold fs-4 mb-3">Welcome, Admin!</h3> -->
-                        
-                        <!-- there used to be a table here and other cards -->
+                        <h3 class="fw-bold fs-4 mb-3">Clock In / Clock Out</h3>
+                        <form id="addClockForm" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
+                            <div class="mb-3">
+                                <label for="employeeName" class="form-label">Employee Name</label>
+                                <input type="text" class="form-control" id="employeeName" name="employeeName" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="clockDate" class="form-label">Date</label>
+                                <input type="date" class="form-control" id="clockDate" name="clockDate" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="clockInTime" class="form-label">Clock In Time</label>
+                                <input type="time" class="form-control" id="clockInTime" name="clockInTime" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="clockOutTime" class="form-label">Clock Out Time</label>
+                                <input type="time" class="form-control" id="clockOutTime" name="clockOutTime" required>
+                            </div>
+                            
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmationModal">Submit</button>
 
+                            <!-- Confirmation Modal -->
+                            <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="confirmationModalLabel">Confirm Clock In/Out?</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Are you sure you want to submit this?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <!-- Close the modal if the user cancels -->
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                            <!-- Submit the form if the user confirms -->
+                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </form>
+
+                    </div>
+                    
                 <!-- Modal -->
                 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">

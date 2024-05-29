@@ -1,3 +1,46 @@
+<?php
+require_once("/xampp/htdocs/LEI/connections.php");
+
+$success_message = '';
+$error_message = '';
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    // Get form data
+    $employeeName = $_POST['employeeName'];
+    $currentShiftDate = $_POST['currentShiftDate'];
+    $currentShiftType = $_POST['currentShiftType'];
+    $desiredShiftDate = $_POST['desiredShiftDate'];
+    $desiredShiftType = $_POST['desiredShiftType'];
+    $swapEmployeeName = isset($_POST['swapEmployeeName']) ? $_POST['swapEmployeeName'] : null;
+
+    // Prepare SQL statement
+    $sql = "INSERT INTO shift_change_requests (employeeName, currentShiftDate, currentShiftType, desiredShiftDate, desiredShiftType, swapEmployeeName)
+            VALUES (?, ?, ?, ?, ?, ?)";
+    
+    if ($stmt = $connections->prepare($sql)) {
+        // Bind parameters to the statement
+        $stmt->bind_param("ssssss", $employeeName, $currentShiftDate, $currentShiftType, $desiredShiftDate, $desiredShiftType, $swapEmployeeName);
+
+        // Execute the statement
+        if ($stmt->execute()) {
+            $success_message = "Shift change request submitted successfully.";
+        } else {
+            $error_message = "Error: " . $stmt->error;
+        }
+
+        // Close the statement
+        $stmt->close();
+    } else {
+        $error_message = "Error: " . $connections->error;
+    }
+
+    // Close the connection
+    $connections->close();
+}
+?>
+
+
 <!DOCTYPE html>
 <html>
 
@@ -5,7 +48,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sidebar With Bootstrap</title>
+    <title>Shift and Scheduling System</title>
     <!-- <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet" /> -->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -57,6 +100,9 @@
                     </a>
                 </li>
 
+                
+            </ul>
+
             <!-- LOGOUT SECTION  -->
             <div class="sidebar-footer">
                 <a href="#" class="sidebar-link" data-bs-toggle="modal" data-bs-target="#exampleModal">
@@ -77,7 +123,7 @@
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <form class="d-flex ms-auto">
+                        <!-- <form class="d-flex ms-auto">
                             <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                             <button class="btn btn-outline-success" type="submit">Search</button>
                         </form>
@@ -97,7 +143,7 @@
                                     </form>
                                 </li>
                             </ul>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </nav>
@@ -105,11 +151,59 @@
 
             <!-- MAIN SECTION -->
             <main class="content px-3 py-4">
-                <div class="container-fluid">
-                    <div class="mb-3">
-                        <!-- <h3 class="fw-bold fs-4 mb-3">Welcome, Admin!</h3> -->
-                        
-                        <!-- there used to be a table here and other cards -->
+
+                <div class="container mt-3">
+                    <?php if (!empty($success_message)) : ?>
+                        <div class="alert alert-success" role="alert"><?php echo $success_message; ?></div>
+                        <?php endif; ?>
+                        <?php if (!empty($error_message)) : ?>
+                        <div class="alert alert-danger" role="alert"><?php echo $error_message; ?></div>
+                         <?php endif; ?>
+                </div>
+
+
+                <div class="container-fluid border border-dark p-3">
+                    <div class="mt-2">
+                        <h3 class="fw-bold fs-4 mb-3">Request Shift Change</h3>
+                        <form id="shiftChangeForm" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST">
+                            <div class="mb-3">
+                                <label for="employeeName" class="form-label">Employee Name</label>
+                                <input type="text" class="form-control" id="employeeName" name="employeeName" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="currentShiftDate" class="form-label">Current Shift Date</label>
+                                <input type="date" class="form-control" id="currentShiftDate" name="currentShiftDate" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="currentShiftType" class="form-label">Current Shift Type</label>
+                                <select class="form-select" id="currentShiftType" name="currentShiftType" required>
+                                    <option value="" disabled selected>Select your current shift</option>
+                                    <option value="Morning Shift">Morning</option>
+                                    <option value="Afternoon Shift">Afternoon</option>
+                                    <option value="Night Shift">Night</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="desiredShiftDate" class="form-label">Desired Shift Date</label>
+                                <input type="date" class="form-control" id="desiredShiftDate" name="desiredShiftDate" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="desiredShiftType" class="form-label">Desired Shift Type</label>
+                                <select class="form-select" id="desiredShiftType" name="desiredShiftType" required>
+                                    <option value="" disabled selected>Select your desired shift</option>
+                                    <option value="Morning Shift">Morning</option>
+                                    <option value="Afternoon Shift">Afternoon</option>
+                                    <option value="Night Shift">Night</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="swapEmployeeName" class="form-label">Swap with Employee (optional)</label>
+                                <input type="text" class="form-control" id="swapEmployeeName" name="swapEmployeeName">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Request Shift Change</button>
+                        </form>
+                    </div>
+                </div>
 
                 <!-- Modal -->
                 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

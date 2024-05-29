@@ -53,7 +53,7 @@ function getShiftTime($shiftType) {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sidebar With Bootstrap</title>
+    <title>Shift and Scheduling System</title>
     <!-- <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet" /> -->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -155,12 +155,7 @@ function getShiftTime($shiftType) {
                         <span>Shift Request</span>
                     </a>
                 </li>
-                <li class="sidebar-item">
-                    <a href="notification" class="sidebar-link">
-                        <i class='bx bx-bell' ></i>                        
-                        <span>Notification</span>
-                    </a>
-                </li>
+                
             </ul>
 
             <!-- LOGOUT SECTION  -->
@@ -183,7 +178,7 @@ function getShiftTime($shiftType) {
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <form class="d-flex ms-auto">
+                        <!-- <form class="d-flex ms-auto">
                             <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                             <button class="btn btn-outline-success" type="submit">Search</button>
                         </form>
@@ -203,7 +198,7 @@ function getShiftTime($shiftType) {
                                     </form>
                                 </li>
                             </ul>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </nav>
